@@ -1,0 +1,21 @@
+1. How does your Navbar update immediately after a name or avatar change without a page refresh? Explain which React concept makes this possible.
+The Navbar updates instantly because both the Navbar and ProfilePage use the same AuthContext.
+After the user successfully updates their profile, the updateUser function updates the user state stored in the context
+Since React Context provides shared state across the application, every component that consumes AuthContext automatically re-renders with the latest data.
+This eliminates the need to refresh the page or log in again
+
+2. Why do you verify the current password before allowing a change? What security risk does skipping this step create?
+Verifying the current password ensures that the person requesting the password change is the legitimate account owner.
+Even if someone gains temporary access to a logged-in device, they cannot change the password without knowing the existing one.
+If this verification is skipped, an attacker who has access to an authenticated session could change the user's password immediately, lock the real user out of the account, and take permanent control of it. Therefore, checking the current password is an important security measure.
+
+3. Your password change route returns 401 for wrong current password. Why 401 and not 400?
+A 401 Unauthorized response is appropriate because the request failed due to an authentication problem—the current password provided by the user is incorrect.
+The client is authenticated with a valid JWT, but they failed to prove their identity for this sensitive operation.
+A 400 Bad Request is used when the request itself is invalid, such as missing required fields, invalid input formats, or malformed data. Since the request format is correct but the authentication check fails, 401 Unauthorized is the correct status code.
+
+4. What is the purpose of the updateUser function you added to AuthContext?
+The updateUser function updates the user information stored in the global authentication state after a successful profile update.
+It replaces the old user object with the updated one without requiring the user to log out or refresh the page.
+This keeps all components that depend on the authenticated user—such as the Navbar, Profile page, and other user-related components—in sync with the latest profile information. 
+It provides a better user experience by ensuring changes to the user's name or avatar are reflected immediately throughout the application.
